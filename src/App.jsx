@@ -22,8 +22,11 @@ const App = () => {
   const [userData, setUserData] = useState({})
   const [isLoadingMember, setIsLoadingMember] = useState(false)
   const [isFirstScan, setIsFirstScan] = useState(true)
+  const [onEror, setOnEror] = useState(false)
 
   function onScan(qrData){
+    setIsFirstScan(false)
+    setOnEror(false)
     let qrString = atob(qrData[0].rawValue)
     let parsedData = JSON.parse(qrString)
     console.log(parsedData)
@@ -40,6 +43,7 @@ const App = () => {
 
   function onSubmitFest(){
      setIsLoadingMember(true)
+     setOnEror(true)
   //  fetch("https://klenrest.ru/vkbot/users/getUser",
     //   {
     //     method: "POST",
@@ -59,9 +63,9 @@ const App = () => {
             <View id="main" activePanel="main">
               <Panel id="main">
                 <PanelHeader>Подтверждение участия</PanelHeader>
-                <Group style={{}}>
+                <Group>
                   <Gradient mode="tint" to="top">
-                    {isFirstScan ? <Placeholder>Отсканируйте код участника форума</Placeholder> :<Placeholder
+                    {isFirstScan ? <Placeholder>Отсканируйте код участника форума</Placeholder> : onEror? <Placeholder>Проихошла ошибка, возможно код недействителен</Placeholder> : <Placeholder
                       icon={isLoadingMember? <Spinner/> :  <Avatar size={96} />}
                       title={isLoadingMember? <Spinner/> : "Алексей Мазелюк"}
                       
@@ -80,7 +84,7 @@ const App = () => {
                     onScan={(result) => {
 
                       // console.log(result);
-                      setIsFirstScan(false)
+                     
                       onScan(result)
                     }}
                     sound={false}
